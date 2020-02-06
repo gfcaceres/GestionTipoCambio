@@ -1,6 +1,7 @@
 package pe.com.bcp.gestiontipocambio.service;
 
 
+import com.google.gson.Gson;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DefaultObserver;
@@ -93,7 +94,7 @@ public class GestionTipoCambioService {
     }
 
     public RealizarConversionResponse realizarConversionRx2(RealizarConversionRequest realizarConversionRequest){
-       RealizarConversionResponse realizarConversionResponse = null;
+       RealizarConversionResponse realizarConversionResponse = new RealizarConversionResponse();
         Observable<RealizarConversionRequest> realizarConversionRequestObservable = Observable.just(realizarConversionRequest);
 
         realizarConversionRequestObservable.subscribe(new Consumer<RealizarConversionRequest>() {
@@ -107,6 +108,17 @@ public class GestionTipoCambioService {
 
 
     private void realizarConversion(RealizarConversionRequest realizarConversionRequest,RealizarConversionResponse realizarConversionResponse){
-        realizarConversionResponse = realizarConversion(realizarConversionRequest);
+        Gson gson = new Gson();
+        RealizarConversionResponse realizarConversionResponseTmp = null;
+        realizarConversionResponseTmp = realizarConversion(realizarConversionRequest);
+
+        realizarConversionResponse.setMonto(realizarConversionResponseTmp.getMonto());
+        realizarConversionResponse.setTipoCambio(realizarConversionResponseTmp.getTipoCambio());
+        realizarConversionResponse.setMonedaOrigen(realizarConversionResponseTmp.getMonedaOrigen());
+        realizarConversionResponse.setMonedaDestino(realizarConversionResponseTmp.getMonedaDestino());
+        realizarConversionResponse.setMontoTipoCambio(realizarConversionResponseTmp.getMontoTipoCambio());
+        realizarConversionResponse.getResponseStatus().setCodigo(realizarConversionResponseTmp.getResponseStatus().getCodigo());
+        realizarConversionResponse.getResponseStatus().setDescripcion(realizarConversionResponseTmp.getResponseStatus().getDescripcion());
+
     }
 }
