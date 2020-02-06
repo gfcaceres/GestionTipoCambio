@@ -1,6 +1,9 @@
 package pe.com.bcp.gestiontipocambio.service;
 
 
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.observers.DefaultObserver;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import pe.com.bcp.gestiontipocambio.domain.TipoCambio;
@@ -11,8 +14,10 @@ import pe.com.bcp.gestiontipocambio.rest.RealizarConversionResponse;
 import org.springframework.stereotype.Service;
 import pe.com.bcp.gestiontipocambio.util.Constantes;
 
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Created by usuario on 5/02/2020.
@@ -75,5 +80,33 @@ public class GestionTipoCambioService {
             }
         }
         return cambioValor;
+    }
+
+
+    public Observable<RealizarConversionResponse> realizarConversionRx(RealizarConversionRequest realizarConversionRequest){
+        return Observable.fromCallable(new Callable<RealizarConversionResponse>() {
+            @Override
+            public RealizarConversionResponse call() throws Exception {
+                return realizarConversion(realizarConversionRequest);
+            }
+        });
+    }
+
+    public RealizarConversionResponse realizarConversionRx2(RealizarConversionRequest realizarConversionRequest){
+       RealizarConversionResponse realizarConversionResponse = null;
+        Observable<RealizarConversionRequest> realizarConversionRequestObservable = Observable.just(realizarConversionRequest);
+
+        realizarConversionRequestObservable.subscribe(new Consumer<RealizarConversionRequest>() {
+            @Override
+            public void accept(RealizarConversionRequest realizarConversionRequest) throws Exception {
+                realizarConversion(realizarConversionRequest,realizarConversionResponse);
+            }
+        });
+        return realizarConversionResponse;
+    }
+
+
+    private void realizarConversion(RealizarConversionRequest realizarConversionRequest,RealizarConversionResponse realizarConversionResponse){
+        realizarConversionResponse = realizarConversion(realizarConversionRequest);
     }
 }

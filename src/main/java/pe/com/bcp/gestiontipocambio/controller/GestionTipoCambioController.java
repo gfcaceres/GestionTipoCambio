@@ -1,5 +1,6 @@
 package pe.com.bcp.gestiontipocambio.controller;
 
+import io.reactivex.Observable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +19,23 @@ public class GestionTipoCambioController {
     @Autowired
     private GestionTipoCambioService gestionTipoCambioService;
 
-    @RequestMapping(value = "/RealizarConversion", method = RequestMethod.POST, headers = "Accept=application/json", produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/realizarConversion", method = RequestMethod.POST, headers = "Accept=application/json", produces = "application/json; charset=utf-8")
     public @ResponseBody RealizarConversionResponse realizarConversion(@RequestBody RealizarConversionRequest realizarConversionRequest) throws Exception {
 
         return gestionTipoCambioService.realizarConversion(realizarConversionRequest);
+    }
+
+    @RequestMapping(value = "/realizarConversionRx", method = RequestMethod.POST, headers = "Accept=application/json", produces = "application/json; charset=utf-8")
+    public @ResponseBody
+    Observable<RealizarConversionResponse> realizarConversionRx(@RequestBody RealizarConversionRequest realizarConversionRequest) throws Exception {
+
+        return gestionTipoCambioService.realizarConversionRx(realizarConversionRequest);
+    }
+
+    @RequestMapping(value = "/realizarConversionRx2", method = RequestMethod.POST, headers = "Accept=application/json", produces = "application/json; charset=utf-8")
+    public @ResponseBody
+    RealizarConversionResponse realizarConversionRx2(@RequestBody RealizarConversionRequest realizarConversionRequest) throws Exception {
+
+        return gestionTipoCambioService.realizarConversionRx2(realizarConversionRequest);
     }
 }
