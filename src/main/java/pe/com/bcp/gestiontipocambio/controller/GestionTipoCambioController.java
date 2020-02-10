@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pe.com.bcp.gestiontipocambio.rest.RealizarConversionRequest;
 import pe.com.bcp.gestiontipocambio.rest.RealizarConversionResponse;
+import pe.com.bcp.gestiontipocambio.rest.RegistrarTipoCambioRequest;
+import pe.com.bcp.gestiontipocambio.rest.RegistrarTipoCambioResponse;
 import pe.com.bcp.gestiontipocambio.service.GestionTipoCambioService;
 
 /**
@@ -37,5 +39,12 @@ public class GestionTipoCambioController {
     RealizarConversionResponse realizarConversionRx2(@RequestBody RealizarConversionRequest realizarConversionRequest) throws Exception {
 
         return gestionTipoCambioService.realizarConversionRx2(realizarConversionRequest);
+    }
+
+    @RequestMapping(value = "/registrarTipoCambio", method = RequestMethod.POST, headers = "Accept=application/json", produces = "application/json; charset=utf-8")
+    public @ResponseBody
+    RegistrarTipoCambioResponse registrarTipoCambio(@RequestBody RegistrarTipoCambioRequest registrarTipoCambioRequest) throws Exception {
+
+        return gestionTipoCambioService.registrarTipoCambio(registrarTipoCambioRequest);
     }
 }

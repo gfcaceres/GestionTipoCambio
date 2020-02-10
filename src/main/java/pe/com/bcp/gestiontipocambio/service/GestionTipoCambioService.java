@@ -7,12 +7,16 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DefaultObserver;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import pe.com.bcp.gestiontipocambio.domain.TipoCambio;
 import pe.com.bcp.gestiontipocambio.exception.TipoCambioException;
 import pe.com.bcp.gestiontipocambio.repository.TipoCambioRepository;
 import pe.com.bcp.gestiontipocambio.rest.RealizarConversionRequest;
 import pe.com.bcp.gestiontipocambio.rest.RealizarConversionResponse;
 import org.springframework.stereotype.Service;
+import pe.com.bcp.gestiontipocambio.rest.RegistrarTipoCambioRequest;
+import pe.com.bcp.gestiontipocambio.rest.RegistrarTipoCambioResponse;
 import pe.com.bcp.gestiontipocambio.util.Constantes;
 
 
@@ -48,7 +52,7 @@ public class GestionTipoCambioService {
             }catch(NumberFormatException e){
                 throw new TipoCambioException("El monto ingresado no es válido.");
             }
-            cambioValor = buscarTipoCambio(monedaOrigen,monedaDestino);
+            cambioValor = buscarTipoCambio2(monedaOrigen,monedaDestino);
             if( cambioValor == null){
                 throw new TipoCambioException("No se encontró cambio para la moneda ingresada.");
             }
@@ -83,6 +87,22 @@ public class GestionTipoCambioService {
         return cambioValor;
     }
 
+    private Float buscarTipoCambio2(String monedaOrigen,String monedaDestino){
+        Float cambioValor = null;
+        List<TipoCambio> tipoCambioList = new ArrayList<>();
+        Float factor1 = null;
+        Float factor2 = null;
+        for(TipoCambio tipoCambio: tipoCambioRepository.findAll()){
+            if(tipoCambio.getMonedaOrigen().equals("sol") && tipoCambio.getMonedaDestino().equals(monedaOrigen)){
+                factor1 = tipoCambio.getCambioValor();
+            }
+            if(tipoCambio.getMonedaOrigen().equals("sol") && tipoCambio.getMonedaDestino().equals(monedaDestino)){
+                factor2 = tipoCambio.getCambioValor();
+            }
+        }
+        cambioValor = factor1 / factor2;
+        return cambioValor;
+    }
 
     public Observable<RealizarConversionResponse> realizarConversionRx(RealizarConversionRequest realizarConversionRequest){
         return Observable.fromCallable(new Callable<RealizarConversionResponse>() {
@@ -121,4 +141,17 @@ public class GestionTipoCambioService {
         realizarConversionResponse.getResponseStatus().setDescripcion(realizarConversionResponseTmp.getResponseStatus().getDescripcion());
 
     }
+
+    public RegistrarTipoCambioResponse registrarTipoCambio(RegistrarTipoCambioRequest registrarTipoCambioRequest) throws Exception {
+        RegistrarTipoCambioResponse realizarConversionResponse = new RegistrarTipoCambioResponse();
+        Float cambioValorF = 0f;
+        TipoCambio tipoCambio = new TipoCambio();
+        tipoCambio.setMonedaDestino(registrarTipoCambioRequest.getMonedaDestino());
+        tipoCambio.setMonedaOrigen(registrarTipoCambioRequest.getMonedaOrigen());
+        cambioValorF  = Float.parseFloat(registrarTipoCambioRequest.getCambioValor());
+        tipoCambio.setCambioValor(cambioValorF);
+        tipoCambioRepository.save(tipoCambio);
+        return realizarConversionResponse;
+    }
+
 }

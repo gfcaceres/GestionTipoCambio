@@ -7,10 +7,11 @@ CREATE TABLE TIPO_CAMBIO (
   cambioValor FLOAT
 );
 
-INSERT INTO TIPO_CAMBIO (monedaOrigen, monedaDestino, cambioValor) VALUES
+/*INSERT INTO TIPO_CAMBIO (monedaOrigen, monedaDestino, cambioValor) VALUES
   ('sol', 'dolar', 0.30),
-  ('dolar', 'sol', 3.37),
   ('sol', 'euro', 0.27),
-  ('euro','soles',3.71);
+  ('sol','libra',2.6);*/
+
+
 
 
